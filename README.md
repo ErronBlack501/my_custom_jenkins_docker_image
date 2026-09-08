@@ -130,6 +130,8 @@ SonarQube:  http://sonarqube:9000
 Nexus:      http://nexus:8081
 ```
 
+Jenkins accesses Docker through the internal `docker-proxy` `socat` service at `tcp://docker-proxy:2375`. The Docker socket is not published on a Windows host port; this keeps the Docker API reachable only inside the Compose network.
+
 SonarQube connects to PostgreSQL through the Docker service name `db`. The default local credentials are `sonar` / `sonar`; change them before using this setup outside local development.
 
 From Windows, use the published ports:
@@ -223,3 +225,6 @@ For a new project:
 5. Add the project `Jenkinsfile` to the application repository.
 
 Do not use the passwords from this example in production. For a shared environment, use Docker secrets, a secrets manager, or protected Jenkins variables.
+
+Reference Tuto
+https://youtu.be/6YZvp2GwT0A?si=8JgTIb4Z5JsGNUY1
