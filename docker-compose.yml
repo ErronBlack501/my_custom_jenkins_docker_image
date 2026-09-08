@@ -63,7 +63,7 @@ services:
     profiles: [artifacts]
     image: sonatype/nexus3:3.96.0-alpine
     mem_limit: 1g
-    cpus: 0.75
+    cpus: 2.0
     volumes:
       - nexus_data:/nexus-data
     ports:
