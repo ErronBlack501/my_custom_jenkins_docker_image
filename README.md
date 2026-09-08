@@ -29,6 +29,8 @@ The external ports are intentionally different from port `8080`, which is used b
 - Docker Compose v2
 - The local Jenkins image is available:
 
+> **Resource requirement:** Docker Desktop must allocate at least `2 CPU` to the Docker engine to run this project with Nexus. `4 CPU` is recommended when Jenkins, SonarQube, PostgreSQL, and Nexus run at the same time. With only `1 CPU`, Nexus reports a warning and the complete stack may start slowly or become unresponsive.
+
 ```powershell
 docker image ls myjenkins-blueocean:2.580-jdk21
 ```
@@ -61,7 +63,9 @@ Start Nexus separately when the pipeline needs an artifact repository:
 docker compose --profile artifacts up -d --no-build
 ```
 
-CPU limits are configured to prevent saturation: Jenkins `1 CPU`, SonarQube `1.5 CPU`, and Nexus `0.75 CPU`. For the lowest load, start only the profile you need instead of both profiles together.
+CPU limits are configured to prevent saturation: Jenkins `1 CPU`, SonarQube `1.5 CPU`, PostgreSQL `0.5 CPU`, and Nexus `2 CPU`. For the lowest load, start only the profile you need instead of both profiles together.
+
+> **Nexus requirement:** Nexus recommends a minimum of `2 CPU`. Docker Desktop must allocate at least `2 CPU` to its engine. If the host allocates only `1 CPU`, Nexus displays a resource warning and may start slowly. The `cpus: 2.0` limit is a maximum, not a permanent CPU reservation.
 
 SonarQube connects to the local PostgreSQL service at `db:5432`. The database volume is persistent, so later starts do not repeat the initial schema setup.
 
