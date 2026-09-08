@@ -9,4 +9,4 @@ RUN echo "deb [arch=$(dpkg --print-architecture) \
     $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
 RUN apt-get update && apt-get install -y --no-install-recommends docker-ce-cli && rm -rf /var/lib/apt/lists/*
 USER jenkins
-RUN jenkins-plugin-cli --plugins "blueocean docker-workflow json-path-api"
+RUN jenkins-plugin-cli --plugins "blueocean docker-workflow json-path-api sonar"
