@@ -10,10 +10,10 @@ Docker Compose template for starting a local CI/CD environment with:
 ## Architecture
 
 | Service | Image | Local access |
-|---|---|---|
-| Jenkins | `myjenkins-blueocean:2.580-jdk21` | http://localhost:8081 |
-| SonarQube | `sonarqube:community` | http://localhost:9000 |
-| Nexus | `sonatype/nexus3:3.96.0-alpine` | http://localhost:8082 |
+| --- | --- | --- |
+| Jenkins | `myjenkins-blueocean:2.580-jdk21` | [http://localhost:8081](http://localhost:8081) |
+| SonarQube | `sonarqube:community` | [http://localhost:9000](http://localhost:9000) |
+| Nexus | `sonatype/nexus3:3.96.0-alpine` | [http://localhost:8082](http://localhost:8082) |
 | PostgreSQL | Neon | External service |
 
 The external ports are intentionally different from port `8080`, which is used by Java/Tomcat applications:
@@ -132,9 +132,11 @@ SonarQube: http://localhost:9000
 Nexus:     http://localhost:8082
 Jenkins:   http://localhost:8081
 ```
+
 ## Initial Configuration
 
 ### Jenkins
+
 Retrieve the initial password:
 
 ```powershell
