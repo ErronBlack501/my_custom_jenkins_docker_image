@@ -14,7 +14,7 @@ Docker Compose template for starting a local CI/CD environment with:
 | Jenkins | `myjenkins-blueocean:2.580-jdk21` | http://localhost:8081 |
 | SonarQube | `sonarqube:community` | http://localhost:9000 |
 | Nexus | `sonatype/nexus3:3.96.0-alpine` | http://localhost:8082 |
-| PostgreSQL | `postgres:17` | Docker network only |
+| PostgreSQL | Neon | External service |
 
 The external ports are intentionally different from port `8080`, which is used by Java/Tomcat applications:
 
@@ -49,6 +49,21 @@ Start the services:
 docker compose up -d --no-build
 ```
 
+The default startup runs Jenkins only. Start SonarQube and Nexus only when needed:
+
+```powershell
+$env:SONAR_JDBC_URL="jdbc:postgresql://<neon-host>/<database>?sslmode=require"
+$env:SONAR_JDBC_USERNAME="<neon-user>"
+$env:SONAR_JDBC_PASSWORD="<neon-password>"
+docker compose --profile analysis --profile artifacts up -d --no-build
+```
+
+CPU limits are configured to prevent saturation: Jenkins `1 CPU`, SonarQube `1.5 CPU`, and Nexus `0.75 CPU`. For the lowest load, start only the profile you need instead of both profiles together.
+
+Use the direct Neon connection string for SonarQube, not a connection pooler endpoint.
+
+On the Neon free tier, the database compute may be suspended after inactivity. The first SonarQube startup can therefore take longer while Neon wakes PostgreSQL. Wait for the logs to show that SonarQube is operational before retrying or restarting the container; repeated restarts can make startup slower.
+
 Check their status:
 
 ```powershell
@@ -61,7 +76,6 @@ View the logs:
 docker compose logs -f jenkins
 docker compose logs -f sonarqube
 docker compose logs -f nexus
-docker compose logs -f db
 ```
 
 Stop the containers without deleting data:
@@ -79,7 +93,6 @@ Data is stored in the following Docker volumes:
 - `sonarqube_extensions`
 - `sonarqube_logs`
 - `sonarqube_temp`
-- `postgresql`
 
 To delete the data as well, use the following command with caution:
 
@@ -108,8 +121,9 @@ From a Jenkins container, services can be reached by their Docker service names:
 ```text
 SonarQube:  http://sonarqube:9000
 Nexus:      http://nexus:8081
-PostgreSQL: db:5432
 ```
+
+SonarQube connects to Neon through `SONAR_JDBC_URL`. Create a dedicated Neon database or schema for SonarQube; do not reuse an application's production database.
 
 From Windows, use the published ports:
 
